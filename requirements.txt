@@ -1,2 +1,4 @@
 Pillow
 tkinterdnd2
+pandas
+openpyxl

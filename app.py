@@ -103,7 +103,7 @@ file_entry_frame.pack(pady=5)
 
 file_entry_label = Label(file_entry_frame,text="Select Files to be Converted: ", font=('calibre', 10, 'bold'))
 import_file_btn = Button(file_entry_frame, text="Import File(s)", width=10, height=1, command=select_files)
-file_listbox = Listbox(file_entry_frame, width=30, height=5)
+file_listbox = Listbox(file_entry_frame, width=50, height=5)
 convert_file_btn = Button(file_entry_frame, text="Convert File(s)", width=30, height=1, command=convert_files)
 
 file_entry_label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
