@@ -12,7 +12,8 @@ from inventory_converter import InventoryConverter
 # Root Window of Application
 root = TkinterDnD.Tk()
 root.title("Inventory File Wizard")
-root.config(bg="skyblue")
+root.iconbitmap("assets/inspired-logo.ico")
+root.config(bg="#0077C8")
 root.geometry("500x500")
 root.resizable(False, False)
 
@@ -83,46 +84,60 @@ def convert_files():
             files = list(file_listbox.get(0, END))
             save_files(files)
             
-
-main_frame = Frame(root, bg="skyblue")
-main_frame.pack(expand=True, fill=BOTH, padx=10, pady=10)
-
+header = Frame(root, bg="#0077C8", height=100)
+header.pack(fill=X)
 image = Image.open("assets/inspiredu_logo.png")
 resized_logo = image.resize((25, 25))
 photo = ImageTk.PhotoImage(resized_logo)
 
-tool_bar = Frame(main_frame, bg="#f9f9f9")
+title_font = tkFont.Font(family="Helvetica", size=20, weight="bold")
+title_label = Label(header, image=photo, text="Inventory File Wizard", font=title_font, bg="#0077C8", fg="white", compound=LEFT)
+title_label.pack(pady=10)
+
+main_frame = Frame(root, bg="skyblue")
+main_frame.pack(expand=True, fill=BOTH, padx=10, pady=10)
+
+
+tool_bar = Frame(main_frame, bg="white")
 tool_bar.pack(expand=True, fill=BOTH, padx=1, pady=1)
 font_style = tkFont.Font(family="Helvetica", size=16, weight="bold")
-Label(tool_bar, image=photo, text="Inventory File Wizard", font=font_style, bg="#f9f9f9", compound=LEFT).pack(pady=2)
 
 drop_image = Image.open("assets/file-upload.png")
 resized = drop_image.resize((50, 50))
 upload_logo = ImageTk.PhotoImage(resized)
 
-drop_zone = Frame(tool_bar, width=400, height=400, bg="#f9f9f9", borderwidth=2, relief="groove")
-drop_zone.pack(padx=5, pady=5)
+drop_zone =  Frame(tool_bar, bg="white", highlightbackground="#0077C8", highlightthickness=2, height=200, width=400)
+drop_zone.pack(pady=20)
 drop_zone.drop_target_register(DND_FILES)
 drop_zone.dnd_bind('<<Drop>>', drop_files)
 
-drop_logo = Label(drop_zone, image=upload_logo, bg="#f9f9f9")
+drop_logo = Label(drop_zone, image=upload_logo, bg="white")
 drop_logo.pack(pady=10)
 
-drop_text = Label(drop_zone, text="Drop files here\n\nAcceptable file extensions:\n'.xlsx', '.xlsm', '.xls', '.csv'", font=('Helvetica', 12, 'bold'), bg="#f9f9f9")
+drop_text = Label(drop_zone, text="Drop files here\n\nSupported file types:\n'.xlsx', '.xlsm', '.xls', '.csv'", font=('Helvetica', 12, 'bold'), bg="white")
 drop_text.pack()
 
 
 file_entry_frame = Frame(tool_bar, bg="white")
-file_entry_frame.pack(pady=5)
+file_entry_frame.pack(fill=X, padx=20, pady=10)
 
-file_entry_label = Label(file_entry_frame,text="Select Files to be Converted: ", font=('calibre', 10, 'bold'))
-import_file_btn = Button(file_entry_frame, text="Import File(s)", width=10, height=1, command=select_files)
-file_listbox = Listbox(file_entry_frame, width=75, height=5)
-convert_file_btn = Button(file_entry_frame, text="Convert File(s)", width=30, height=1, command=convert_files)
+file_entry_label = Label(file_entry_frame,text="Select Files to be Converted: ", font=('Arial', 12, 'bold'), bg="white")
+file_entry_label.pack(anchor=W)
+
+file_listbox = Listbox(file_entry_frame, width=60, height=5, font=("Arial", 10, "italic"), bd=2, relief="groove")
+
+# Button Section
+button_frame = Frame(tool_bar, bg="white")
+button_frame.pack(pady=1)
+
+button_font = tkFont.Font(family="Helvetica", size=12, weight="bold")
+import_file_btn = Button(button_frame, text="Import File(s)", width=15, height=1, command=select_files, bg="#0077C8", fg="white", font=button_font)
+import_file_btn.grid(row=0, column=0, padx=10)
+
+convert_file_btn = Button(button_frame, text="Convert File(s)", width=15, height=1, command=convert_files, bg="#00B28F", fg="white", font=button_font)
+convert_file_btn.grid(row=0, column=1, padx=10)
 
 file_entry_label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
-import_file_btn.grid(row=0, column=1, padx=5, pady=5)
 file_listbox.grid(row=1, column=0, columnspan=3, padx=5, pady=5, sticky=W+E)
-convert_file_btn.grid(row=2, column=0, columnspan=3, padx=5, pady=5)
 
-root.mainloop()
+root.mainloop() 
