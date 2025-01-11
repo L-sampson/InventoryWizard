@@ -7,12 +7,12 @@ class InventoryConverter:
     def __init__(self, files: List[str]):
         self.files = files
     
-    def convert_files(self):
+    def convert_files(self, save_directory):
         for file in self.files:
-            new_path = self._file_tocsv(file)
+            new_path = self._file_tocsv(file, save_directory)
             print(new_path)
     
-    def _file_tocsv(self,file: str) -> str:
+    def _file_tocsv(self,file: str, save_directory: str) -> str:
         old_file = pd.read_excel(file)
         
         new_columns=['Inventory-ID', 'Inventory-ItemName', 'Inventory-LocationName', 'Inventory-UomName', 'Inventory-Quantity', 'Inventory-Cost', 'Inventory-EventType', 'Tracking-Lot Number', 'Tracking-Expiration Date', 'TrackingSerial-SerialNumber']
@@ -30,7 +30,7 @@ class InventoryConverter:
 
         # Apply the custom function to create the 'Tracking-Lot Number' column
         new_file['Tracking-Lot Number'] = old_file.apply(self._set_lot_number, axis=1)
-        new_file_path = self._create_new_file_ext(file)
+        new_file_path = self._create_new_file_ext(file, save_directory)
         
         new_file.to_csv(new_file_path, index=False)
         return new_file_path
@@ -44,15 +44,9 @@ class InventoryConverter:
             return f"{row['Brand']} {row['Model']}"
 
 
-
-    def _create_new_file_ext(self,file: str) -> str:
-        base= os.path.splitext(file)[0] 
+    def _create_new_file_ext(self,file: str, save_directory: str) -> str:
+        base_name= os.path.basename(os.path.splitext(file)[0]) 
         ext =".csv"
-        new_file_path = f"{base}(Cleaned){ext}"
+        new_file_path = os.path.join(save_directory, f"{base_name}(Cleaned){ext}")
         return new_file_path
 
-files = [r"C:\Users\Inspiredu\Downloads\Rollins 1-2-25(Sheet1).xlsx",
-         r"C:\Users\Inspiredu\Downloads\Jabian Consulting 12-30-24.xlsx"]
-        
-converter = InventoryConverter(files)
-converter.convert_files()

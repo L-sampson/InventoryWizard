@@ -6,6 +6,8 @@ import os
 import re
 from tkinterdnd2 import TkinterDnD, DND_FILES
 from PIL import Image, ImageTk
+from typing import List
+from inventory_converter import InventoryConverter
 
 # Root Window of Application
 root = TkinterDnD.Tk()
@@ -41,7 +43,6 @@ def drop_files(event):
             f"The following files are not accepted types:\n{invalid_files_str}"
         )
 
-    
 # Import files dialog
 def select_files() ->int:
     filetypes = (
@@ -59,6 +60,16 @@ def select_files() ->int:
     file_count = file_listbox.size()
     msg.showinfo("Number of Files", f"You selected {file_count} file(s).")
     return file_count
+
+def save_files(files: List[str]):
+    save_directory = fd.askdirectory(title='Select Directory to Save Files')
+    if save_directory:
+        converter = InventoryConverter(files)
+        converter.convert_files(save_directory)
+        msg.showinfo("Conversion Complete", f"Files have been saved to {save_directory}")
+    else:
+        msg.showerror("No Directory Selected", "Please select a directory to save the files.")
+    
     
 def convert_files():
     file_count = file_listbox.size()
@@ -69,6 +80,9 @@ def convert_files():
         confirm = msg.askokcancel("Convert Files", f"Do you want to convert {file_count} file(s)?")
         if confirm:
             msg.showinfo("Proceeding", "Proceeding to convert the files...")
+            files = list(file_listbox.get(0, END))
+            save_files(files)
+            
 
 main_frame = Frame(root, bg="skyblue")
 main_frame.pack(expand=True, fill=BOTH, padx=10, pady=10)
@@ -103,7 +117,7 @@ file_entry_frame.pack(pady=5)
 
 file_entry_label = Label(file_entry_frame,text="Select Files to be Converted: ", font=('calibre', 10, 'bold'))
 import_file_btn = Button(file_entry_frame, text="Import File(s)", width=10, height=1, command=select_files)
-file_listbox = Listbox(file_entry_frame, width=50, height=5)
+file_listbox = Listbox(file_entry_frame, width=75, height=5)
 convert_file_btn = Button(file_entry_frame, text="Convert File(s)", width=30, height=1, command=convert_files)
 
 file_entry_label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
