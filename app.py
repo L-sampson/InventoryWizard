@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter.font as tkFont
 from tkinter import filedialog as fd
 from tkinter import messagebox as msg
+import sys
 import os
 import re
 from tkinterdnd2 import TkinterDnD, DND_FILES
@@ -9,10 +10,25 @@ from PIL import Image, ImageTk
 from typing import List
 from inventory_converter import InventoryConverter
 
+#Fetch asset files
+if getattr(sys, 'frozen', False):
+    # Running in a bundled environment (PyInstaller)
+    # icon_path = os.path.join(sys._MEIPASS, 'assets', 'inspired-logo.ico')
+    # logo_path = os.path.join(sys._MEIPASS, 'assets', 'inspiredu_logo.png')
+    # upload_logo_path = os.path.join(sys._MEIPASS, 'assets', 'file-upload.png')
+    assets_path = os.path.join(sys._MEIPASS, 'assets')
+else:
+    # Running from the source code (development)
+    assets_path = os.path.join('assets')
+    
+icon_path = os.path.join(assets_path, 'inspired-logo.ico')
+logo_path = os.path.join(assets_path, 'inspiredu_logo.png')
+upload_logo_path = os.path.join(assets_path, 'file-upload.png')
+
 # Root Window of Application
 root = TkinterDnD.Tk()
 root.title("Inventory File Wizard")
-root.iconbitmap("assets/inspired-logo.ico")
+root.wm_iconbitmap(icon_path)
 root.config(bg="#0077C8")
 root.geometry("500x500")
 root.resizable(False, False)
@@ -68,6 +84,7 @@ def save_files(files: List[str]):
         converter = InventoryConverter(files)
         converter.convert_files(save_directory)
         msg.showinfo("Conversion Complete", f"Files have been saved to {save_directory}")
+        file_listbox.delete(0, END)
     else:
         msg.showerror("No Directory Selected", "Please select a directory to save the files.")
 
@@ -95,7 +112,7 @@ def convert_files():
             
 header = Frame(root, bg="#0077C8", height=100)
 header.pack(fill=X)
-image = Image.open("assets/inspiredu_logo.png")
+image = Image.open(logo_path)
 resized_logo = image.resize((25, 25))
 photo = ImageTk.PhotoImage(resized_logo)
 
@@ -111,7 +128,7 @@ tool_bar = Frame(main_frame, bg="white")
 tool_bar.pack(expand=True, fill=BOTH, padx=1, pady=1)
 font_style = tkFont.Font(family="Helvetica", size=16, weight="bold")
 
-drop_image = Image.open("assets/file-upload.png")
+drop_image = Image.open(upload_logo_path)
 resized = drop_image.resize((50, 50))
 upload_logo = ImageTk.PhotoImage(resized)
 
